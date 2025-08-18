@@ -12,7 +12,7 @@ def home():
     else:
         hostname=''    
     
-    return render_template('menu.html', computername=hostname)
+    return render_template('index.html', computername=hostname)
 
 if __name__ == '__main__':
     app.run(debug=True)
