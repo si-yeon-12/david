@@ -40,6 +40,26 @@ def dict_to_json(dict):
     f = open('mission_computer_main.json', 'w', encoding='utf-8')
     json.dump(dict, f, indent=4)
 
+def bonus(dict):
+    danger_dict = {}
+    for key, value in dict.items():
+        print(f'{key} : {value}')
+
+        for dword in ['unstable', 'explosion', 'leak', 'overheating']:
+            if dword in value:
+                danger_dict[key] = value
+                break
+    f = open('filtered_mission_computer_main.json', 'w', encoding='utf-8')
+    json.dump(danger_dict, f, indent=4)
+
+    message = input("mission_computer_main파일에서 검색하고 싶은 문자열을 입력하세요. : ")
+    message = message.lower()
+    for key, value in dict.items():
+        str_value = str(value).lower()
+        if message in str_value:
+            print(f'\n{key} : {value}\n')
+            break
+
 def main():
     print('\nlog파일 읽기\n')
     LogFile = log_read()
@@ -60,8 +80,11 @@ def main():
     for key, value in LogDict.items():
         print(f'{key} : {value}')
 
-    print('\njson파일 생성')
+    print('\njson파일 생성\n')
     dict_to_json(LogDict)
+
+    print('-------------- 보너스 과제 ----------------')
+    bonus(LogDict)
 
 if __name__ == '__main__':
     main()
