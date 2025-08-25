@@ -38,7 +38,7 @@ def lst_to_dict(lst):
 
 def dict_to_json(dict):
     f = open('mission_computer_main.json', 'w', encoding='utf-8')
-    json.dump(dict, f)
+    json.dump(dict, f, indent=4)
 
 def main():
     print('\nlog파일 읽기\n')
