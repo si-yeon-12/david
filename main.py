@@ -41,10 +41,18 @@ def dict_to_json(dict):
     json.dump(dict, f, indent=4)
 
 def bonus(dict):
+    try:
+        with open('C:\Codyssey\mission_computer_main.log', 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        sorted_log = sorted(lines, key=lambda line: line[1:20], reverse=True)
+        print('로그 파일 역순 정렬 출력')
+        for line in sorted_log:
+            print(line.strip('\n'))
+    except Exception as e:
+        print('파일 읽는 중 오류 발생 : ', str(e))
+
     danger_dict = {}
     for key, value in dict.items():
-        print(f'{key} : {value}')
-
         for dword in ['unstable', 'explosion', 'leak', 'overheating']:
             if dword in value:
                 danger_dict[key] = value
@@ -75,7 +83,7 @@ def main():
         print()
 
     print('\n리스트-딕셔너리 변환\n')
-    LogDict = lst_to_dict(sortedlog)
+    LogDict = lst_to_dict(lines)
     for key, value in LogDict.items():
         print(f'{key} : {value}')
 
