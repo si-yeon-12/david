@@ -57,8 +57,7 @@ def bonus(dict):
     for key, value in dict.items():
         str_value = str(value).lower()
         if message in str_value:
-            print(f'\n{key} : {value}\n')
-            break
+            print(f'\n{key} : {value}')
 
 def main():
     print('\nlog파일 읽기\n')
