@@ -37,7 +37,7 @@ def lst_to_dict(lst):
     return LogDict
 
 def dict_to_json(dict):
-    f = open('mission_computer_main.json', 'w', encoding='utf-8')
+    f = open('C:\Codyssey\project4-1\mission_computer_main.json', 'w', encoding='utf-8')
     json.dump(dict, f, indent=4)
 
 def bonus(dict):
@@ -57,7 +57,7 @@ def bonus(dict):
             if dword in value:
                 danger_dict[key] = value
                 break
-    f = open('filtered_mission_computer_main.json', 'w', encoding='utf-8')
+    f = open('C:\Codyssey\project4-1\\filtered_mission_computer_main.json', 'w', encoding='utf-8')
     json.dump(danger_dict, f, indent=4)
 
     message = input("mission_computer_main파일에서 검색하고 싶은 문자열을 입력하세요. : ")
