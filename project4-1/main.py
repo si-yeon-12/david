@@ -57,8 +57,8 @@ def bonus(dict):
             if dword in value:
                 danger_dict[key] = value
                 break
-    f = open('C:\Codyssey\project4-1\\filtered_mission_computer_main.json', 'w', encoding='utf-8')
-    json.dump(danger_dict, f, indent=4)
+    with open('C:\Codyssey\project4-1\\filtered_mission_computer_main.json', 'w', encoding='utf-8') as f:
+        json.dump(danger_dict, f, indent=4)
 
     message = input("mission_computer_main파일에서 검색하고 싶은 문자열을 입력하세요. : ")
     message = message.lower()
