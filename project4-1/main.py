@@ -2,7 +2,7 @@ import json
 
 def log_read():
     try:
-        LogFile = open('C:\Codyssey\mission_computer_main.log', 'r') #문자열로 저장됨
+        LogFile = open('C:\Codyssey\project4-1\mission_computer_main.log', 'r') #문자열로 저장됨
         LogFile = LogFile.read()
         print(LogFile)
 
@@ -16,7 +16,7 @@ def log_read():
     return LogFile
 
 def log_split():
-    LogFile = open('C:\Codyssey\mission_computer_main.log', 'r')
+    LogFile = open('C:\Codyssey\project4-1\mission_computer_main.log', 'r')
     lines = LogFile.readlines()
     del lines[0]
 
@@ -42,7 +42,7 @@ def dict_to_json(dict):
 
 def bonus(dict):
     try:
-        with open('C:\Codyssey\mission_computer_main.log', 'r', encoding='utf-8') as f:
+        with open('C:\Codyssey\project4-1\mission_computer_main.log', 'r', encoding='utf-8') as f:
             lines = f.readlines()
         sorted_log = sorted(lines, key=lambda line: line[1:20], reverse=True)
         print('로그 파일 역순 정렬 출력')
