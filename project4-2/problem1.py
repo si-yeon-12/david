@@ -15,10 +15,12 @@ def inventory_lst():
     return inven_csv, inven_parsing_lst, sorted_lst
 
 def danger_filtered(lst):
+    del lst[0]
     danger_lst = []
     for oneline in lst:
-        if oneline[4] >= 0.7:
+        if float(oneline[4]) >= 0.7:
             danger_lst.append(oneline)
+    
 
     with open('C:\Codyssey\project4-2\Mars_Base_Inventory_danger.csv', 'w', encoding='utf-8') as f:
         writer = csv.writer(f)
@@ -39,7 +41,7 @@ def main():
     print('\nlist를 flammability index 기준 내림차순 정렬 후 출력')
     two_dimension_lst(sorted_lst)
 
-    danger_lst = danger_filtered(inven_parsing_lst)
+    danger_lst = danger_filtered(sorted_lst)
     print('\n인화성 지수 0.7 이상인 항목 출력 후 csv파일로 저장')
     two_dimension_lst(danger_lst)
 
