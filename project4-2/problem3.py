@@ -1,4 +1,5 @@
 import numpy as np
+import csv
 
 def csv_to_numpy():
     arr1 = np.genfromtxt('project4-2/mars_base_main_parts-001.csv', delimiter=',', dtype=None)
@@ -17,8 +18,17 @@ def csv_to_numpy():
         avg = round(avg, 3)
         part_avg = np.array([part[0, 0], avg])
         avg_parts = np.vstack([avg_parts, part_avg])
-
     print(avg_parts)
+
+    # Filter rows where strength < 50 (skip header)
+    filtered = [avg_parts[0]]  # header
+    for row in avg_parts[1:]:
+        if float(row[1]) < 50:
+            filtered.append(row)
+
+    # Save to CSV
+    with open('filtered_avg_parts.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
 
 def main():
     csv_to_numpy()
