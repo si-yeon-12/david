@@ -1,6 +1,9 @@
 import random
 import json
 import time
+import platform
+import os
+import psutil
 
 class DummySensor:
     def __init__(self):
@@ -52,7 +55,40 @@ class MissionComputer:
         except Exception as e:
             print(f'센서 데이터 수집 중 오류 발생: {e}')
 
+    def get_mission_computer_info(self):
+        try:
+            info = {
+                '운영체제' : platform.system(),
+                '운영체제 버전' : platform.version(),
+                'cpu_타입' : platform.processor(),
+                'cpu_코어_수' : os.cpu_count(),
+                '메모리_총_크기(GB)' : round(psutil.virtual_memory().total / (1024 ** 3), 2),
+            }
+            json_info = json.dumps(info, indent=4, ensure_ascii=False)
+            print('\n화성 미션 컴퓨터 정보 (JSON 형식):')
+            print(json_info)
+            return info
+
+        except Exception as e:
+            print(f'컴퓨터 정보 수집 중 오류 발생: {e}')
+
+    def get_mission_computer_load(self):
+        try:
+            load = {
+                'cpu_사용률(%)' : psutil.cpu_percent(interval=1),
+                '메모리_사용률(%)' : psutil.virtual_memory().percent,
+            }
+            json_load = json.dumps(load, indent=4, ensure_ascii=False)
+            print('\n화성 미션 컴퓨터 부하 정보 (JSON 형식):')
+            print(json_load)
+            return load
+        except Exception as e:
+            print(f'컴퓨터 부하 수집 중 오류 발생: {e}')
+            
 
 if __name__ == '__main__':
     RunComputer = MissionComputer()
     RunComputer.get_sensor_data()
+    RunComputer.get_mission_computer_info()
+    RunComputer.get_mission_computer_load()
+    
