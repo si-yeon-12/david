@@ -1,4 +1,6 @@
 import random
+import json
+import time
 
 class DummySensor:
     def __init__(self):
@@ -24,12 +26,33 @@ class DummySensor:
 
     def get_env(self):
         return self.env_values
+    
+class MissionComputer:
+    def __init__(self):
+        self.env_values = {
+            'mars_base_internal_temperature': None,
+            'mars_base_external_temperature': None,
+            'mars_base_internal_humidity': None,
+            'mars_base_external_illuminance': None,
+            'mars_base_internal_co2': None,
+            'mars_base_internal_oxygen': None
+        }
+        self.ds = DummySensor()
+
+    def get_sensor_data(self):
+        try:
+            while True:
+                self.ds.set_env()
+                self.env_values = self.ds.get_env()
+                json_data = json.dumps(self.env_values, indent=4, ensure_ascii=False)
+                print(f'\n화성 기지 환경 데이터 (JSON 형식):\n{json_data}')
+                time.sleep(5) # 5초 대기
+        except KeyboardInterrupt:
+            print('센서 데이터 수집 중단됨.')  
+        except Exception as e:
+            print(f'센서 데이터 수집 중 오류 발생: {e}')
+
 
 if __name__ == '__main__':
-    ds = DummySensor()
-    ds.set_env()
-    env_data = ds.get_env()
-
-    print('현재 화성 기지 환경 데이터:')
-    for key, value in env_data.items():
-        print(f'{key}: {value}')
+    RunComputer = MissionComputer()
+    RunComputer.get_sensor_data()
