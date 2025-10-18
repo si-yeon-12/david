@@ -4,6 +4,8 @@ import time
 import platform
 import os
 import psutil
+import threading
+import multiprocessing
 
 class DummySensor:
     def __init__(self):
@@ -85,10 +87,42 @@ class MissionComputer:
         except Exception as e:
             print(f'컴퓨터 부하 수집 중 오류 발생: {e}')
             
+def run_threads():
+    print("멀티 스레드 실행 시작")
+    RunComputer = MissionComputer(name='Threaded_MissionComputer')
+
+    t1 = threading.Thread(target=RunComputer.get_sensor_data)
+    t2 = threading.Thread(target=RunComputer.get_mission_computer_info)
+    t3 = threading.Thread(target=RunComputer.get_mission_computer_load)
+
+    t1.start()
+    t2.start()
+    t3.start()
+
+def run_processes():
+    print("멀티 프로세스 실행 시작")
+
+    runComputer1 = MissionComputer(name='Process_MissionComputer_1')
+    runComputer2 = MissionComputer(name='Process_MissionComputer_2')
+    runComputer3 = MissionComputer(name='Process_MissionComputer_3')
+
+    p1 = multiprocessing.Process(target=runComputer1.get_mission_computer_info)
+    p2 = multiprocessing.Process(target=runComputer2.get_mission_computer_load)
+    p3 = multiprocessing.Process(target=runComputer3.get_sensor_data)
+
+    p1.start()
+    p2.start()
+    p3.start()
+
+    p1.join()
+    p2.join()
+    p3.join()
+
 
 if __name__ == '__main__':
-    RunComputer = MissionComputer()
-    RunComputer.get_sensor_data()
-    RunComputer.get_mission_computer_info()
-    RunComputer.get_mission_computer_load()
-    
+    # RunComputer = MissionComputer()
+    # RunComputer.get_sensor_data()
+    # RunComputer.get_mission_computer_info()
+    # RunComputer.get_mission_computer_load()
+    run_threads()
+    # run_processes()
