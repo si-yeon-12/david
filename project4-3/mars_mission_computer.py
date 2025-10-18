@@ -33,7 +33,8 @@ class DummySensor:
         return self.env_values
     
 class MissionComputer:
-    def __init__(self):
+    def __init__(self, name=None, stop_event=None):
+        self.name = name
         self.env_values = {
             'mars_base_internal_temperature': None,
             'mars_base_external_temperature': None,
@@ -43,10 +44,11 @@ class MissionComputer:
             'mars_base_internal_oxygen': None
         }
         self.ds = DummySensor()
+        self.stop_event = stop_event or threading.Event()
 
     def get_sensor_data(self):
         try:
-            while True:
+            while not self.stop_event.is_set():
                 self.ds.set_env()
                 self.env_values = self.ds.get_env()
                 json_data = json.dumps(self.env_values, indent=4, ensure_ascii=False)
@@ -89,15 +91,25 @@ class MissionComputer:
             
 def run_threads():
     print("멀티 스레드 실행 시작")
-    RunComputer = MissionComputer(name='Threaded_MissionComputer')
+    stop_evt = threading.Event()
+    RunComputer = MissionComputer(name='Threaded_MissionComputer', stop_event=stop_evt)
 
-    t1 = threading.Thread(target=RunComputer.get_sensor_data)
+    t1 = threading.Thread(target=RunComputer.get_sensor_data, daemon=True)
     t2 = threading.Thread(target=RunComputer.get_mission_computer_info)
     t3 = threading.Thread(target=RunComputer.get_mission_computer_load)
 
     t1.start()
     t2.start()
     t3.start()
+
+    # Example: let threads run for 20s then stop sensor loop
+    try:
+        time.sleep(20)
+    finally:
+        stop_evt.set()
+        t1.join(timeout=2)
+        t2.join()
+        t3.join()
 
 def run_processes():
     print("멀티 프로세스 실행 시작")
@@ -120,9 +132,8 @@ def run_processes():
 
 
 if __name__ == '__main__':
-    # RunComputer = MissionComputer()
-    # RunComputer.get_sensor_data()
-    # RunComputer.get_mission_computer_info()
-    # RunComputer.get_mission_computer_load()
+    RunComputer = MissionComputer()
+    RunComputer.get_sensor_data()
+    RunComputer.get_mission_computer_info()
+    RunComputer.get_mission_computer_load()
     run_threads()
-    # run_processes()
