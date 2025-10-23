@@ -1,0 +1,23 @@
+git checkout -b new
+git commit --amend
+git commit --amend -m
+git merge --abort
+
+git reset --soft HEAD^
+git branch -u origin/feature
+git fetch
+
+1번 
+파일 라인별로
+파일 리스트로
+시간별 소팅
+딕셔너리 객체 생성
+**예외처리 
+칼럼 명, 길이 + 헤더 정확한지 확인 후 아니면 예외처리
+
+2번
+돔 문제
+출력형식 주의
+
+3번
+시저 문제

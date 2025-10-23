@@ -90,50 +90,59 @@ class MissionComputer:
             print(f'컴퓨터 부하 수집 중 오류 발생: {e}')
             
 def run_threads():
-    print("멀티 스레드 실행 시작")
-    stop_evt = threading.Event()
-    RunComputer = MissionComputer(name='Threaded_MissionComputer', stop_event=stop_evt)
+    try:            
+        print("멀티 스레드 실행 시작")
+        stop_evt = threading.Event()
+        RunComputer = MissionComputer(name='Threaded_MissionComputer', stop_event=stop_evt)
+        
+        t1 = threading.Thread(target=RunComputer.get_sensor_data, daemon=True)
+        t2 = threading.Thread(target=RunComputer.get_mission_computer_info)
+        t3 = threading.Thread(target=RunComputer.get_mission_computer_load)
 
-    t1 = threading.Thread(target=RunComputer.get_sensor_data, daemon=True)
-    t2 = threading.Thread(target=RunComputer.get_mission_computer_info)
-    t3 = threading.Thread(target=RunComputer.get_mission_computer_load)
+        t1.start()
+        t2.start()
+        t3.start()
 
-    t1.start()
-    t2.start()
-    t3.start()
-
-    # Example: let threads run for 20s then stop sensor loop
-    try:
-        time.sleep(20)
-    finally:
-        stop_evt.set()
-        t1.join(timeout=2)
+        t1.join()
         t2.join()
         t3.join()
+    except KeyboardInterrupt:
+        print("\n멀티 스레드 실행 중단")
+        stop_evt.set()
 
 def run_processes():
-    print("멀티 프로세스 실행 시작")
+    try:
+        print("멀티 프로세스 실행 시작")
+        stop_evt = multiprocessing.Event()
+        runComputer1 = MissionComputer(name='Process_MissionComputer_1', stop_event=stop_evt)
+        runComputer2 = MissionComputer(name='Process_MissionComputer_2', stop_event=stop_evt)
+        runComputer3 = MissionComputer(name='Process_MissionComputer_3', stop_event=stop_evt)
 
-    runComputer1 = MissionComputer(name='Process_MissionComputer_1')
-    runComputer2 = MissionComputer(name='Process_MissionComputer_2')
-    runComputer3 = MissionComputer(name='Process_MissionComputer_3')
+        p1 = multiprocessing.Process(target=runComputer1.get_sensor_data)
+        p2 = multiprocessing.Process(target=runComputer2.get_mission_computer_info)
+        p3 = multiprocessing.Process(target=runComputer3.get_mission_computer_load)
 
-    p1 = multiprocessing.Process(target=runComputer1.get_mission_computer_info)
-    p2 = multiprocessing.Process(target=runComputer2.get_mission_computer_load)
-    p3 = multiprocessing.Process(target=runComputer3.get_sensor_data)
+        p1.start()
+        p2.start()
+        p3.start()
 
-    p1.start()
-    p2.start()
-    p3.start()
+        p1.join()
+        p2.join()
+        p3.join()
+    except KeyboardInterrupt:
+        print("\n멀티 프로세스 실행 중단")
+        stop_evt.set()
 
-    p1.join()
-    p2.join()
-    p3.join()
+def main():
+    try:
+        RunComputer = MissionComputer()
+        RunComputer.get_sensor_data()
+        RunComputer.get_mission_computer_info()
+        RunComputer.get_mission_computer_load()
+        run_threads()
+    except KeyboardInterrupt:
+        print("\n프로그램 종료")
 
 
 if __name__ == '__main__':
-    RunComputer = MissionComputer()
-    RunComputer.get_sensor_data()
-    RunComputer.get_mission_computer_info()
-    RunComputer.get_mission_computer_load()
-    run_threads()
+    main()
