@@ -21,3 +21,194 @@ git fetch
 
 3번
 시저 문제
+
+
+
+git checkout -b new : new라는 이름의 새 브랜치를 만들고, 즉시 그 브랜치로 이동(전환)하라는 뜻
+git commit --amend : "가장 최근의 커밋을 수정하겠다" 라는 뜻
+git merge --abort : 진행 중이던 머지(merge) 작업을 취소하고, 머지를 시작하기 이전 상태로 완전히 되돌리는 명령어
+
+git reset --soft HEAD^  :  가장 최근의 커밋(HEAD^)을 취소하되, 변경 내용은 그대로 남겨두고 싶을 때"
+git branch -u origin/feature :  현재 내가 작업하고 있는 로컬 브랜치를 원격 저장소의 특정 브랜치와 연결(추적)할 때 
+git fetch : 원격 저장소의 최신 변경 내용을 내 로컬 저장소로 가져오기만 하는" 명령어
+
+
+문제3. 
+def read_log(path: str = 'mission_computer_main.log') -> str:
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            return f.read()
+
+    except FileNotFoundError:
+        raise
+    except UnicodeDecodeError:
+        raise
+    except Exception:
+        raise
+
+def main():
+    try:
+        log = readlog()
+        print(log)
+
+        lines = log.strip().splitlines()
+        if not lines or lines[0] != 'timestamp,event,message':
+            raise ValueError
+
+        pairs = list()
+        for line in lines[1:]:
+            parts = line.strip().split(',', 2)
+
+
+            if len(parts) != 3:
+                raise ValueError
+
+            time, , mess = parts
+
+            if len(time) == 19:
+                pairs.append((time, mess.strip()))
+            else:
+                raise ValueError
+ 
+        print(pairs)
+
+        try:
+            sorted_pairs = sorted(pairs, key=lambda item : item[0], reverse = True)
+            result_dict = dict(sorted_pairs)
+            print(sorted_pairs)
+            print(result_dict)
+        except:
+            print('Processing Error.')
+            return
+
+    except FileNotFoundError:
+        print('File open error')
+        return
+
+    except UnicodeDecodeError:
+        print('Decoding error.')
+        return
+
+    except (ValueError, IndexError):
+        print('invalid log format')
+        return
+
+    except Exception:
+        print('Processing error.')
+        return
+
+if name == 'main':
+    main()
+
+
+
+문제4.
+from math import pi
+
+def sphere_area(diameter: float, material: str, thickness: float = 1.0) -> tuple[float, float]: #<< 함수 자체는 '문제'에 기재되어 있음.
+    '''
+    #상수 선언 및 인자값 유효성 확인
+    
+0이거나 음수일 경우
+material(재질 입력값)이 상수와 다를 경우 -> ValueError'''
+MATERIALS = {'유리': 2.4, '알루미늄': 2.7, '탄소강': 7.85}
+if diameter <= 0 or thickness <= 0 or material not in MATERIALS:
+  raise ValueError
+
+    try: #try-except 필수 1
+        density_g_cm3 = MATERIALS[material] #<< 설정 필요 
+
+        # == 하기 계산식은 문제에 기재되어 있음 ===
+        area_m2 = pi * (diameter ** 2)
+        area_cm2 = area_m2 * 10000
+        volume_cm3 = area_cm2 * thickness
+        mass_kg = (density_g_cm3 * volume_cm3) / 1000
+        mars_weight_kg = mass_kg * 0.38
+        return (area_m2, mars_weight_kg)
+    except Exception:
+        raise
+def main():
+    try:
+        d_str = input('지름(m)을 입력하세요: ').strip()
+        diameter_input = float(d_str)
+        if diameter_input <= 0:
+            raise ValueError
+
+        m_raw = input('재질(유리/알루미늄/탄소강)을 입력하세요: ').strip()
+        if m_raw not in ['유리', '알루미늄', '탄소강']:
+            raise ValueError
+
+        t_str = input('두께(cm)를 입력하세요(기본값:1): ').strip()
+        thickness_input = 1.0 if t_str == '' else float(t_str)
+        if thickness_input <= 0:
+            raise ValueError
+
+        ''' 예외 방법 2: thickness(두께) 예외처리
+        if t_raw == '':
+            thickness_input = 1.0
+        else:
+            thickness_input = float(t_raw)
+
+        if thickness_input <= 0:
+            raise ValueError
+        '''
+
+        area, weight = sphere_area(diameter_input, m_raw, thickness_input)
+        print(f"재질: {m_raw}, 지름: {diameter_input:g}, 두께: {int(thickness_input):d}, 면적: {area:.3f}, 무게: {weight:.3f} kg")
+                                                            #thickness_input:g
+    except ValueError:
+        print('Invalid input.')
+        return
+    except Exception:
+        print('Processing error.')
+        return
+
+if name == 'main':
+    main()
+문제5.
+CIPHER_TEXT = 'erkekr, DDrker ereei Qic efkef' # 변경 1. 전역 상수 설정
+
+def caesar_cipher_decode(target_text: str) -> list[str]: # 변경 2. 문제에서 제공되는 함수 그대로 사용
+   try:
+     if target_text == '':
+        raise ValueError
+     result = []
+     for i in range(26):
+         result_temp = ""
+         for char in target_text:
+             if char.isalpha():
+                if char.isupper():
+                   temp_char= char
+                else:
+                   temp_char = chr((ord(char) - ord('a') - i ) % 26 + ord('a'))
+             else:
+                 temp_char = char
+             result_temp += temp_char
+         result.append(result_temp)
+     return result
+   except ValueError:
+        raise
+   except Exception:
+        raise
+
+def main():
+   try:
+      result =caesar_cipher_decode(CIPHER_TEXT)
+      for i, str in enumerate(result):
+        print(f"{i}: {str}")
+      s_input = input()
+      if s_input == '':
+         raise ValueError
+      s_num = int(s_input)
+      if not (0<=s_num<=25):
+        raise ValueError
+      print(f"Result: {result[s_num]}")
+   except ValueError:
+        print("Input Error")
+        return
+   except Exception:
+        print("Processing Error")
+        return
+
+if name == 'main':
+   main()
